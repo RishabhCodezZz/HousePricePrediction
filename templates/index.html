@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- In your <head> -->
+    <script>
+        // Set initial theme on page load
+        (function() {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.setAttribute('data-theme', saved || 'light');
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjUgMTBMNDAgMjVIMzVWMzdIMTVWMjVIMTBMMjUgMTBaIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0yMCAzMEwyNSAyNUwzMCAzMEwzNSAyMCIgc3Ryb2tlPSIjMjU2M2ViIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iMjAiIHI9IjIiIGZpbGw9IiMyNTYzZWIiLz48L3N2Zz4=" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <title>PricePredict - House Price Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="theme-switch" aria-label="Toggle theme">
+            <!-- Sun icon -->
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <!-- Moon icon -->
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="container">
+        <header>
+            <!-- Logo -->
+            <div class="logo">
+                <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+                    <path class="logo-house" d="M25 10L40 25H35V37H15V25H10L25 10Z" stroke="currentColor" stroke-width="2"/>
+                    <path class="logo-chart" d="M20 30L25 25L30 30L35 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle class="logo-dot" cx="35" cy="20" r="2" fill="currentColor"/>
+                </svg>
+                <span class="logo-text">PricePredict</span>
+            </div>
+            <h1>House Price Predictor</h1>
+            <p class="subtitle">Enter your house details to get an estimated price</p>
+        </header>
+
+        <main>
+            <form id="prediction-form">
+                <div class="form-grid">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h2>Basic Information</h2>
+                        <div class="input-group">
+                            <label for="bedrooms" data-tooltip="Number of bedrooms in the house">
+                                Bedrooms
+                            </label>
+                            <input type="number" id="bedrooms" required min="0" max="4" placeholder="e.g., 3">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bathrooms" data-tooltip="Number of bathrooms (including partial bathrooms)">
+                                Bathrooms
+                            </label>
+                            <input type="number" id="bathrooms" required step="1" min="0" max="4" placeholder="e.g., 2">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="living_area" data-tooltip="Total living area in square meters">
+                                Living Area (m²)
+                            </label>
+
+
+                            <input type="number" id="living_area" required min="0" max="450" placeholder="e.g., 120">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="lot_area" data-tooltip="Total lot area in square meters">
+                                Lot Area (m²)
+                            </label>
+                            <input type="number" id="lot_area" required min="0" max="800" placeholder="e.g., 240">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="grade" data-tooltip="Overall grade of the house (1-5). Higher grade means better quality construction">
+                                House Grade
+                            </label>
+                            <input type="number" id="grade" required min="1" max="5" placeholder="e.g., 4">
+                        </div>
+                    </div>
+
+                    <!-- Additional Features -->
+                    <div class="form-section">
+                        <h2>Additional Features</h2>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-wrapper" data-tooltip="House has a basement area">
+                                <input type="checkbox" id="has_basement">
+                                <span class="checkbox-label">Basement</span>
+                            </label>
+
+                            <label class="checkbox-wrapper" data-tooltip="House has been renovated">
+                                <input type="checkbox" id="renovated">
+                                <span class="checkbox-label">Renovated</span>
+                            </label>
+
+                            <label class="checkbox-wrapper" data-tooltip="Property has a nice view">
+                                <input type="checkbox" id="nice_view">
+                                <span class="checkbox-label">Nice View</span>
+                            </label>
+
+                            <label class="checkbox-wrapper" data-tooltip="House is in perfect condition">
+                                <input type="checkbox" id="perfect_condition">
+                                <span class="checkbox-label">Perfect Condition</span>
+                            </label>
+
+                            <label class="checkbox-wrapper" data-tooltip="House has a separate lavatory">
+                                <input type="checkbox" id="has_lavatory">
+                                <span class="checkbox-label">Lavatory</span>
+                            </label>
+
+                            <label class="checkbox-wrapper" data-tooltip="House is a single-floor building">
+                                <input type="checkbox" id="single_floor">
+                                <span class="checkbox-label">Single Floor</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="predict-button">
+                    Get Price Estimate
+                </button>
+            </form>
+
+            <div id="result-section" class="hidden">
+                <div class="result-card">
+                    <h2>Estimated Price</h2>
+                    <div class="price-display">
+                        <span class="currency">$</span>
+                        <span id="predicted-price">0</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/static/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeSwitch = document.getElementById('theme-switch');
+            themeSwitch.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        });
+    </script>
+</body>
+</html> 
